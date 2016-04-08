@@ -1,0 +1,150 @@
+<html ng-app="myapp">
+   <head>
+      <title></title>
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+      <script src = "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+   </head>
+
+   <style type="text/css">
+    .product td{
+      padding:5px 10px;
+    }
+   </style>
+   <body ng-controller="productController">
+      <h1>CRUD in Angular JS</h1>
+      <table class="table table-bordered">
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Option</th>
+        </tr>
+
+        <tr ng-repeat="product in listProducts">
+          <td>{{product.id}}</td>
+          <td>{{product.name}}</td>
+          <td>{{product.price}}</td>
+          <td>{{product.quantity}}</td>
+          <td>
+            <a href="#" ng-click="del(product.id)">Delete</a> |
+            <a href="#" ng-click="selectEdit(product.id)">Edit</a>
+          </td>
+        </tr>
+
+      </table>
+
+      <h3>Product Information</h3>
+      <table class="product" cellpadding = "10" cellspacing="2">
+        <tr>
+          <td>ID</td>
+          <td>
+            <input type="text" class="form-control" ng-model="id"/>
+          </td>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td><input type="text" class="form-control" ng-model="name"/></td>
+        </tr>
+        <tr>
+          <td>Price</td>
+          <td>
+             <input type="text" class="form-control"  ng-model="price"/>
+           </td>
+        </tr>
+
+        <tr>
+          <td>Quantity</td>
+          <td><input type="text" class="form-control" ng-model="quantity"/></td>
+        </tr>
+
+        <tr>
+          <td>&nbsp;</td>
+          <td>
+            <input type="button" class="btn btn-primary" value="Add" ng-click="add()"/>
+            <input type="button" class="btn btn-default" value="Save" ng-click="edit()"/>
+          </td>
+        </tr>
+
+      </table>
+
+      <script type="text/javascript">
+        var myapp = angular.module('myapp',[]);
+        myapp.controller('productController',function($scope){
+          $scope.listProducts = [
+            {id: 'p01', name: 'Product 1', price:1000, quantity: 20},
+            {id: 'p02', name: 'Product 2', price:2000, quantity: 21},
+            {id: 'p03', name: 'Product 3', price:3000, quantity: 22},
+            {id: 'p04', name: 'Product 4', price:4000, quantity: 23},
+            {id: 'p05', name: 'Product 5', price:5000, quantity: 24}
+          ];
+
+          //function edit data in product
+          $scope.selectEdit = function(id){
+            var index = getSelectedIndex(id);
+            var product = $scope.listProducts[index];
+            $scope.id = product.id;
+            $scope.name = product.name;
+            $scope.price = product.price;
+            $scope.quantity = product.quantity;
+          };
+
+          //function delete
+          $scope.del = function(id){
+            var result = confirm('Are you sure?');
+            if(result ===true){
+              var index = getSelectedIndex(id);
+              $scope.listProducts.splice(index,1);
+            }
+          };
+
+          //function add
+          $scope.add = function(){
+            if($scope.validate())
+            {
+                $scope.listProducts.push({
+                  id: $scope.id, name: $scope.name, price: $scope.price, quantity: $scope.quantity
+                });
+                // reset value after adding product
+                $scope.id = '';
+                $scope.name = '';
+                $scope.price = '';
+                $scope.quantity = '';
+            }
+          };
+
+          //function edit
+          $scope.edit = function(){
+            var index = getSelectedIndex($scope.id);
+            $scope.listProducts[index].name = $scope.name;
+            $scope.listProducts[index].price = $scope.price;
+            $scope.listProducts[index].quantity = $scope.quantity;
+          };
+
+          function getSelectedIndex(id){
+            for(var i = 0 ; i < $scope.listProducts.length;i++)
+              if($scope.listProducts[i].id==id)
+                return i;
+              return -1;
+          }
+
+          $scope.validate = function(){
+            if(!$scope.id){
+              return false;
+            }
+            else if(!$scope.name){
+              return false;
+            }
+            else if(!$scope.price){
+              return false;
+            }
+            else if(!$scope.quantity){
+              return false;
+            }
+            return true;
+          }
+        });
+      </script>
+   </body>
+</html>
